@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import WeatherDisplay from './WeatherDisplay'
 
 const LeafletMap = () => {
-  const [markerPosition, setMarkerPosition] = useState([27.7172, 85.324]) // Default position for Kathmandu, Nepal
+  const [markerPosition, setMarkerPosition] = useState([27.7172, 85.324]) 
   const [coordinates, setCoordinates] = useState({ lat: 27.7172, lng: 85.324 })
   const [weatherData, setWeatherData] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
@@ -13,7 +13,7 @@ const LeafletMap = () => {
   useEffect(() => {
     async function fetchWeatherData(lat: number, lng: number) {
       try {
-        const apiKey = 'YOUR_WEATHER_API_KEY' // Replace with your actual API key
+        const apiKey = 'YOUR_WEATHER_API_KEY' 
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}`
         )
@@ -26,14 +26,13 @@ const LeafletMap = () => {
         console.error('Error fetching weather data:', error)
       }
     }
-
     fetchWeatherData(coordinates.lat, coordinates.lng)
   }, [coordinates.lat, coordinates.lng])
 
   return (
     <div>
       <MapContainer
-        center={[27.7172, 85.324]} // Kathmandu's coordinates
+        center={[27.7172, 85.324]} 
         zoom={13}
         style={{ height: '400px', width: '100%' }}
         maxBounds={[
@@ -56,13 +55,17 @@ const LeafletMap = () => {
   )
 }
 
-const MapClickHandler = ({ setMarkerPosition, setCoordinates, setModalVisible }: any) => {
+const MapClickHandler = ({ setMarkerPosition, setCoordinates, setModalVisible }:any) => {
   const map = useMapEvents({
     click: (e) => {
       const { lat, lng } = e.latlng
-      setMarkerPosition([lat, lng])
-      setCoordinates({ lat, lng })
-      setModalVisible(true)
+      if (lat >= 27.6 && lat <= 27.8 && lng >= 85.2 && lng <= 85.4) {
+        setMarkerPosition([lat, lng])
+        setCoordinates({ lat, lng })
+        setModalVisible(true)
+      } else {
+        window.alert("You can only select locations within Kathmandu Valley.")
+      }
     },
   })
   return null
